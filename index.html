@@ -1517,6 +1517,7 @@ ${articlesHTML}
   /* ============================================
      MAIN GENERATE FLOW
   ============================================ */
+  document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('generate-btn').addEventListener('click', async () => {
     clearError();
     const btn = document.getElementById('generate-btn');
@@ -1617,6 +1618,7 @@ ${articlesHTML}
     btn.disabled = false;
     updateButtonState();
   });
+  }); // end DOMContentLoaded
   </script>
 </body>
 </html>
