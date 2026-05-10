@@ -510,29 +510,58 @@
     /^ftp:\/\//i,
   ];
 
-  function validateURL(raw) {
-    if (!raw || !raw.trim()) return { valid: false, reason: 'empty' };
-    let url;
-    try {
-      url = new URL(raw.trim());
-    } catch {
-      return { valid: false, reason: 'malformed' };
-    }
-    if (!['http:', 'https:'].includes(url.protocol)) {
-      return { valid: false, reason: 'protocol' };
-    }
-    for (const pattern of BLOCKED_PATTERNS) {
-      if (pattern.test(raw)) {
-        return { valid: false, reason: 'private-ip' };
-      }
-    }
-    // Block numeric-only IPs (basic check)
-    const ipv4 = /^(\d{1,3}\.){3}\d{1,3}$/;
-    if (ipv4.test(url.hostname)) {
-      return { valid: false, reason: 'raw-ip' };
-    }
-    return { valid: true, url };
+ function validateURL(raw) {
+  if (!raw || !raw.trim()) return { valid: false, reason: 'empty' };
+  
+  let url;
+  try {
+    // Auto-prefix https if missing
+    const input = raw.trim().startsWith('http') ? raw.trim() : 'https://' + raw.trim();
+    url = new URL(input);
+  } catch {
+    return { valid: false, reason: 'malformed' };
   }
+
+  if (!['http:', 'https:'].includes(url.protocol)) {
+    return { valid: false, reason: 'protocol' };
+  }
+
+  const hostname = url.hostname.toLowerCase();
+
+  // Block private IP ranges
+  const privatePatterns = [
+    /^localhost$/,
+    /^127\./,
+    /^0\./,
+    /^10\./,
+    /^172\.(1[6-9]|2\d|3[01])\./,
+    /^192\.168\./,
+    /^169\.254\./,
+    /^\[::1\]$/,
+    /^\[fc00:/,
+    /^metadata\./,
+    /^169\.254\.169\.254$/,
+  ];
+
+  for (const pattern of privatePatterns) {
+    if (pattern.test(hostname)) {
+      return { valid: false, reason: 'private-ip' };
+    }
+  }
+
+  // Block raw numeric IPv4 (but only pure IPs, not hostnames)
+  const ipv4 = /^(\d{1,3}\.){3}\d{1,3}$/;
+  if (ipv4.test(hostname)) {
+    return { valid: false, reason: 'raw-ip' };
+  }
+
+  // Must have at least one dot (real domain)
+  if (!hostname.includes('.')) {
+    return { valid: false, reason: 'no-tld' };
+  }
+
+  return { valid: true, url };
+}
 
   /* ============================================
      CORS PROXY — FETCH LAYER
