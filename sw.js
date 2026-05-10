@@ -1,39 +1,48 @@
-/* Offsett Review — Service Worker */
-const CACHE = 'offsett-review-v1';
+/* Offsett Review — Service Worker v2 */
+const CACHE = 'offsett-review-v2';
 
 const PRECACHE = [
   '/Offsett_review/',
   '/Offsett_review/index.html',
-  '/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@300;400&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/Readability.js/0.5.0/Readability.min.js',
-  'https://unpkg.com/pagedjs/dist/paged.polyfill.js',
+  '/Offsett_review/manifest.json',
 ];
+
+function isCacheable(request) {
+  try {
+    const url = new URL(request.url);
+    if (url.protocol === 'chrome-extension:') return false;
+    if (url.protocol === 'data:') return false;
+    if (request.method !== 'GET') return false;
+    if (url.hostname.includes('allorigins.win')) return false;
+    if (!['http:', 'https:'].includes(url.protocol)) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(cache => {
-      return Promise.allSettled(
+    caches.open(CACHE)
+      .then(cache => Promise.allSettled(
         PRECACHE.map(url => cache.add(url).catch(() => {}))
-      );
-    }).then(() => self.skipWaiting())
+      ))
+      .then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
+    caches.keys()
+      .then(keys => Promise.all(
+        keys.filter(k => k !== CACHE).map(k => caches.delete(k))
+      ))
+      .then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', e => {
-  // Pass through proxy requests — never cache fetched article content
-  if (e.request.url.includes('allorigins.win')) {
-    return;
-  }
+  if (!isCacheable(e.request)) return;
 
   e.respondWith(
     caches.match(e.request).then(cached => {
@@ -41,9 +50,11 @@ self.addEventListener('fetch', e => {
       return fetch(e.request).then(res => {
         if (!res || res.status !== 200 || res.type === 'opaque') return res;
         const clone = res.clone();
-        caches.open(CACHE).then(cache => cache.put(e.request, clone));
+        caches.open(CACHE).then(cache => {
+          try { cache.put(e.request, clone); } catch (err) {}
+        });
         return res;
-      }).catch(() => caches.match('/index.html'));
+      }).catch(() => caches.match('/Offsett_review/index.html'));
     })
   );
 });

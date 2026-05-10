@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Offsett Review" />
@@ -17,7 +18,7 @@
 
   <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Readability.js/0.5.0/Readability.min.js"></script>
+  <script src="https://unpkg.com/@mozilla/readability@0.5.0/Readability.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
 
@@ -1491,6 +1492,7 @@ ${articlesHTML}
     btn.disabled = true;
 
     const rawURLs = getURLs();
+    console.log('[OR] Button clicked. URLs:', rawURLs);
     initProgress();
 
     // Step 0: Validate
@@ -1498,8 +1500,9 @@ ${articlesHTML}
     const validURLs = [];
     for (const raw of rawURLs) {
       const result = validateURL(raw);
+      console.log('[OR] Validating:', raw, '->', result);
       if (!result.valid) {
-        errorStep(0, `Blocked URL: "${raw}" — reason: ${result.reason}`);
+        errorStep(0, 'Blocked URL: ' + raw + ' — reason: ' + result.reason);
         btn.disabled = false;
         return;
       }
@@ -1514,13 +1517,17 @@ ${articlesHTML}
 
     // Step 1: Fetch
     advanceStep(1);
+    console.log('[OR] Fetching', validURLs.length, 'URLs via proxy...');
     const rawHTMLs = [];
     for (const url of validURLs) {
       try {
+        console.log('[OR] Fetching:', url);
         const html = await fetchViaProxy(url);
+        console.log('[OR] Fetched OK, length:', html.length);
         rawHTMLs.push({ html, url });
       } catch (e) {
-        errorStep(1, `Failed to fetch "${url}": ${e.message}`);
+        console.error('[OR] Fetch error:', e);
+        errorStep(1, 'Failed to fetch ' + url + ': ' + e.message);
         btn.disabled = false;
         return;
       }
@@ -1528,13 +1535,16 @@ ${articlesHTML}
 
     // Step 2: Extract
     advanceStep(2);
+    console.log('[OR] Extracting articles...');
     const articles = [];
     for (const { html, url } of rawHTMLs) {
       try {
         const article = extractArticle(html, url);
+        console.log('[OR] Extracted:', article.title, '— words:', article.wordCount);
         articles.push(article);
       } catch (e) {
-        errorStep(2, `Could not extract article from "${url}": ${e.message}`);
+        console.error('[OR] Extract error:', e);
+        errorStep(2, 'Could not extract article from ' + url + ': ' + e.message);
         btn.disabled = false;
         return;
       }
@@ -1542,22 +1552,35 @@ ${articlesHTML}
 
     // Step 3: Sanitize (already done inside extractArticle, confirm)
     advanceStep(3);
-    await new Promise(r => setTimeout(r, 200)); // Brief pause for UI feedback
+    console.log('[OR] Sanitization complete.');
+    await new Promise(r => setTimeout(r, 200));
 
     // Step 4: Build magazine HTML
     advanceStep(4);
+    console.log('[OR] Building magazine HTML...');
     const issueDate = new Date().toLocaleDateString('en-GB', {
       day: 'numeric', month: 'long', year: 'numeric'
     });
-    const magazineHTML = buildMagazineHTML(articles, issueDate);
+    let magazineHTML;
+    try {
+      magazineHTML = buildMagazineHTML(articles, issueDate);
+      console.log('[OR] Magazine HTML built, length:', magazineHTML.length);
+    } catch (e) {
+      console.error('[OR] Build error:', e);
+      errorStep(4, 'Failed to build magazine: ' + e.message);
+      btn.disabled = false;
+      return;
+    }
 
     // Step 5: Print
     advanceStep(5);
+    console.log('[OR] Opening print window...');
     try {
       await generateAndShare(magazineHTML, issueDate);
       completeProgress();
     } catch (e) {
-      errorStep(5, `Print failed: ${e.message}`);
+      console.error('[OR] Print error:', e);
+      errorStep(5, 'Print failed: ' + e.message);
     }
 
     btn.disabled = false;
