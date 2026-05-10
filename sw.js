@@ -2,8 +2,8 @@
 const CACHE = 'offsett-review-v1';
 
 const PRECACHE = [
-  '/',
-  '/index.html',
+  '/Offsett_review/',
+  '/Offsett_review/index.html',
   '/manifest.json',
   'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@300;400&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js',
