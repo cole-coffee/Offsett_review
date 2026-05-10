@@ -1467,31 +1467,41 @@ ${articlesHTML}
 
   function getURLs() {
     return [1, 2, 3]
-      .map(i => document.getElementById(`url-${i}`).value.trim())
+      .map(i => { const el = document.getElementById('url-' + i); return el ? el.value.trim() : ''; })
       .filter(Boolean);
   }
 
-  [1, 2, 3].forEach(i => {
-    const input = document.getElementById('url-' + i);
-
-    const refresh = () => updateInputState(i, input.value);
-
-    input.addEventListener('input', refresh);
-    input.addEventListener('change', refresh);
-    input.addEventListener('keyup', refresh);
-    input.addEventListener('paste', () => { setTimeout(refresh, 100); setTimeout(refresh, 300); });
-    input.addEventListener('cut', () => setTimeout(refresh, 100));
-    input.addEventListener('compositionend', refresh);
-    input.addEventListener('blur', refresh);
-  });
-
-  // Fallback poll — catches iOS drag-drop, autofill, third-party keyboards
-  setInterval(() => {
+  /* Attach all input listeners and polling once DOM is ready */
+  function initInputs() {
     [1, 2, 3].forEach(i => {
       const input = document.getElementById('url-' + i);
-      updateInputState(i, input.value);
+      if (!input) return;
+
+      const refresh = () => updateInputState(i, input.value);
+
+      input.addEventListener('input', refresh);
+      input.addEventListener('change', refresh);
+      input.addEventListener('keyup', refresh);
+      input.addEventListener('paste', () => { setTimeout(refresh, 100); setTimeout(refresh, 300); });
+      input.addEventListener('cut', () => setTimeout(refresh, 100));
+      input.addEventListener('compositionend', refresh);
+      input.addEventListener('blur', refresh);
     });
-  }, 500);
+
+    // Fallback poll — catches iOS autofill, drag-drop, third-party keyboards
+    setInterval(() => {
+      [1, 2, 3].forEach(i => {
+        const input = document.getElementById('url-' + i);
+        if (input) updateInputState(i, input.value);
+      });
+    }, 500);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initInputs);
+  } else {
+    initInputs(); // DOM already ready
+  }
 
   /* ============================================
      SERVICE WORKER REGISTRATION
