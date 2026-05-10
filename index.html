@@ -269,14 +269,43 @@ function validateURL(raw) {
 }
 
 // ─── PROXY FETCH ─────────────────────────────────────────────────────────────
+// Three proxies tried in sequence. If all fail, surfaces a clear message.
+
+const PROXIES = [
+  {
+    build: url => 'https://api.allorigins.win/get?url=' + encodeURIComponent(url),
+    extract: json => json.contents,
+  },
+  {
+    build: url => 'https://corsproxy.io/?' + encodeURIComponent(url),
+    extract: text => text,   // returns raw HTML directly
+    raw: true,
+  },
+  {
+    build: url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
+    extract: text => text,   // returns raw HTML directly
+    raw: true,
+  },
+];
 
 async function fetchArticle(url) {
-  const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-  const res = await fetch(proxy, { signal: AbortSignal.timeout(20000) });
-  if (!res.ok) throw new Error('Proxy returned ' + res.status);
-  const json = await res.json();
-  if (!json.contents) throw new Error('Proxy returned empty content');
-  return json.contents;
+  let lastError = null;
+  for (const proxy of PROXIES) {
+    try {
+      const endpoint = proxy.build(url);
+      const res = await fetch(endpoint, { signal: AbortSignal.timeout(20000) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const body = proxy.raw ? await res.text() : await res.json();
+      const contents = proxy.raw ? body : proxy.extract(body);
+      if (!contents || contents.length < 100) throw new Error('Empty response');
+      console.log('[OR] Fetched via proxy:', endpoint.split('?')[0]);
+      return contents;
+    } catch (e) {
+      console.warn('[OR] Proxy failed:', e.message);
+      lastError = e;
+    }
+  }
+  throw new Error('All proxies failed. Last error: ' + lastError.message);
 }
 
 // ─── CONTENT EXTRACTION ───────────────────────────────────────────────────────
