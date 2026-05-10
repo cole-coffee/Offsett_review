@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Offsett Review" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#ffffff" />
   <title>Offsett Review</title>
   <link rel="manifest" href="manifest.json" />
 
@@ -34,11 +34,11 @@
       --accent: #8b1a1a;
       --accent-light: #c4392d;
       --rule: #c8bfad;
-      --ui-bg: #0a0a0a;
-      --ui-surface: #141414;
-      --ui-border: #222;
-      --ui-text: #e8e0d0;
-      --ui-muted: #666;
+      --ui-bg: #ffffff;
+      --ui-surface: #f7f7f7;
+      --ui-border: #cccccc;
+      --ui-text: #000000;
+      --ui-muted: #555555;
       --ff-display: 'Playfair Display', Georgia, serif;
       --ff-body: 'EB Garamond', Georgia, serif;
       --ff-mono: 'DM Mono', monospace;
@@ -92,7 +92,7 @@
     .masthead-logo {
       width: 32px;
       height: 32px;
-      border: 1px solid var(--accent);
+      border: 1px solid #000000;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -140,7 +140,7 @@
       font-size: 10px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--accent-light);
+      color: #555555;
       margin-bottom: 16px;
     }
 
@@ -149,20 +149,20 @@
       font-size: clamp(32px, 5vw, 52px);
       font-weight: 400;
       line-height: 1.1;
-      color: var(--ui-text);
+      color: #000000;
       margin-bottom: 16px;
     }
 
     .hero-headline em {
       font-style: italic;
-      color: var(--paper-warm);
+      color: #333333;
     }
 
     .hero-sub {
       font-family: var(--ff-body);
       font-size: 16px;
       line-height: 1.6;
-      color: var(--ui-muted);
+      color: #555555;
     }
 
     /* URL Input Form */
@@ -199,28 +199,29 @@
 
     .url-input {
       flex: 1;
-      background: var(--ui-surface);
-      border: 1px solid var(--ui-border);
-      color: var(--ui-text);
+      background: #ffffff;
+      border: 1px solid #cccccc;
+      color: #000000;
       font-family: var(--ff-mono);
       font-size: 12px;
       padding: 12px 16px;
       outline: none;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.2s;
       letter-spacing: 0.02em;
       -webkit-appearance: none;
       border-radius: 0;
     }
 
-    .url-input::placeholder { color: #3a3a3a; }
+    .url-input::placeholder { color: #aaaaaa; }
 
     .url-input:focus {
-      border-color: var(--accent);
-      background: #111;
+      border-color: #000000;
+      outline: 2px solid #000000;
+      outline-offset: -1px;
     }
 
-    .url-input.valid { border-color: #2a5a2a; }
-    .url-input.invalid { border-color: #5a2a2a; }
+    .url-input.valid { border-color: #1a6b1a; }
+    .url-input.invalid { border-color: #b00000; }
 
     .url-status {
       width: 6px;
@@ -231,8 +232,8 @@
       transition: background 0.2s;
     }
 
-    .url-status.valid { background: #4a8a4a; }
-    .url-status.invalid { background: var(--accent); }
+    .url-status.valid { background: #1a6b1a; }
+    .url-status.invalid { background: #b00000; }
 
     .form-divider {
       display: flex;
@@ -244,13 +245,13 @@
     .form-divider-line {
       flex: 1;
       height: 1px;
-      background: var(--ui-border);
+      background: #cccccc;
     }
 
     .form-divider-text {
       font-family: var(--ff-mono);
       font-size: 10px;
-      color: #333;
+      color: #999999;
       letter-spacing: 0.1em;
       text-transform: uppercase;
     }
@@ -258,8 +259,8 @@
     /* Generate button */
     .generate-btn {
       margin-top: 8px;
-      background: var(--accent);
-      color: #f5f0e8;
+      background: #000000;
+      color: #ffffff;
       border: none;
       font-family: var(--ff-display);
       font-size: 15px;
@@ -276,8 +277,8 @@
     }
 
     .generate-btn:active { transform: scale(0.99); }
-    .generate-btn:disabled { background: #2a1a1a; color: #444; cursor: not-allowed; }
-    .generate-btn:not(:disabled):hover { background: var(--accent-light); }
+    .generate-btn:disabled { background: #cccccc; color: #888888; cursor: not-allowed; }
+    .generate-btn:not(:disabled):hover { background: #333333; }
 
     .generate-btn-inner {
       display: flex;
@@ -298,8 +299,8 @@
     .progress-bar.visible { display: flex; }
 
     .progress-track {
-      height: 1px;
-      background: var(--ui-border);
+      height: 2px;
+      background: #dddddd;
       position: relative;
       overflow: hidden;
     }
@@ -309,7 +310,7 @@
       left: 0;
       top: 0;
       height: 100%;
-      background: var(--accent);
+      background: #000000;
       width: 0%;
       transition: width 0.4s ease;
     }
@@ -323,7 +324,7 @@
     .progress-step {
       font-family: var(--ff-mono);
       font-size: 11px;
-      color: #333;
+      color: #aaaaaa;
       letter-spacing: 0.05em;
       transition: color 0.3s;
       display: flex;
@@ -331,9 +332,9 @@
       gap: 8px;
     }
 
-    .progress-step.active { color: var(--ui-text); }
-    .progress-step.done { color: #4a6a4a; }
-    .progress-step.error { color: var(--accent-light); }
+    .progress-step.active { color: #000000; font-weight: 500; }
+    .progress-step.done { color: #1a6b1a; }
+    .progress-step.error { color: #b00000; }
 
     .step-dot {
       width: 4px;
@@ -347,10 +348,10 @@
     .error-msg {
       font-family: var(--ff-mono);
       font-size: 11px;
-      color: var(--accent-light);
+      color: #b00000;
       padding: 10px 16px;
-      border: 1px solid #3a1a1a;
-      background: #120808;
+      border: 1px solid #b00000;
+      background: #fff5f5;
       letter-spacing: 0.03em;
       display: none;
     }
@@ -360,7 +361,7 @@
     /* Footer */
     .app-footer {
       padding: 20px 32px;
-      border-top: 1px solid var(--ui-border);
+      border-top: 1px solid #cccccc;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -369,7 +370,7 @@
     .footer-note {
       font-family: var(--ff-mono);
       font-size: 10px;
-      color: #2a2a2a;
+      color: #aaaaaa;
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
@@ -377,7 +378,7 @@
     .footer-rule {
       width: 40px;
       height: 1px;
-      background: var(--ui-border);
+      background: #cccccc;
     }
 
     /* ============================================
@@ -405,10 +406,10 @@
       <div class="masthead">
         <div class="masthead-logo">
           <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="1" y="1" width="7" height="10" stroke="#8b1a1a" stroke-width="1"/>
-            <rect x="10" y="7" width="7" height="10" stroke="#8b1a1a" stroke-width="1"/>
-            <line x1="1" y1="14" x2="8" y2="14" stroke="#8b1a1a" stroke-width="1"/>
-            <line x1="10" y1="4" x2="17" y2="4" stroke="#8b1a1a" stroke-width="1"/>
+            <rect x="1" y="1" width="7" height="10" stroke="#000000" stroke-width="1"/>
+            <rect x="10" y="7" width="7" height="10" stroke="#000000" stroke-width="1"/>
+            <line x1="1" y1="14" x2="8" y2="14" stroke="#000000" stroke-width="1"/>
+            <line x1="10" y1="4" x2="17" y2="4" stroke="#000000" stroke-width="1"/>
           </svg>
         </div>
         <div>
@@ -510,58 +511,29 @@
     /^ftp:\/\//i,
   ];
 
- function validateURL(raw) {
-  if (!raw || !raw.trim()) return { valid: false, reason: 'empty' };
-  
-  let url;
-  try {
-    // Auto-prefix https if missing
-    const input = raw.trim().startsWith('http') ? raw.trim() : 'https://' + raw.trim();
-    url = new URL(input);
-  } catch {
-    return { valid: false, reason: 'malformed' };
-  }
-
-  if (!['http:', 'https:'].includes(url.protocol)) {
-    return { valid: false, reason: 'protocol' };
-  }
-
-  const hostname = url.hostname.toLowerCase();
-
-  // Block private IP ranges
-  const privatePatterns = [
-    /^localhost$/,
-    /^127\./,
-    /^0\./,
-    /^10\./,
-    /^172\.(1[6-9]|2\d|3[01])\./,
-    /^192\.168\./,
-    /^169\.254\./,
-    /^\[::1\]$/,
-    /^\[fc00:/,
-    /^metadata\./,
-    /^169\.254\.169\.254$/,
-  ];
-
-  for (const pattern of privatePatterns) {
-    if (pattern.test(hostname)) {
-      return { valid: false, reason: 'private-ip' };
+  function validateURL(raw) {
+    if (!raw || !raw.trim()) return { valid: false, reason: 'empty' };
+    let url;
+    try {
+      url = new URL(raw.trim());
+    } catch {
+      return { valid: false, reason: 'malformed' };
     }
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      return { valid: false, reason: 'protocol' };
+    }
+    for (const pattern of BLOCKED_PATTERNS) {
+      if (pattern.test(raw)) {
+        return { valid: false, reason: 'private-ip' };
+      }
+    }
+    // Block numeric-only IPs (basic check)
+    const ipv4 = /^(\d{1,3}\.){3}\d{1,3}$/;
+    if (ipv4.test(url.hostname)) {
+      return { valid: false, reason: 'raw-ip' };
+    }
+    return { valid: true, url };
   }
-
-  // Block raw numeric IPv4 (but only pure IPs, not hostnames)
-  const ipv4 = /^(\d{1,3}\.){3}\d{1,3}$/;
-  if (ipv4.test(hostname)) {
-    return { valid: false, reason: 'raw-ip' };
-  }
-
-  // Must have at least one dot (real domain)
-  if (!hostname.includes('.')) {
-    return { valid: false, reason: 'no-tld' };
-  }
-
-  return { valid: true, url };
-}
 
   /* ============================================
      CORS PROXY — FETCH LAYER
@@ -1226,7 +1198,7 @@ body {
 }
 
 .article-body blockquote::before {
-  content: '\201C';
+  content: '“';
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 36pt;
   color: #8b1a1a;
@@ -1478,17 +1450,33 @@ ${articlesHTML}
   }
 
   [1, 2, 3].forEach(i => {
-    const input = document.getElementById(`url-${i}`);
-    input.addEventListener('input', () => updateInputState(i, input.value));
-    input.addEventListener('paste', () => setTimeout(() => updateInputState(i, input.value), 50));
+    const input = document.getElementById('url-' + i);
+
+    const refresh = () => updateInputState(i, input.value);
+
+    input.addEventListener('input', refresh);
+    input.addEventListener('change', refresh);
+    input.addEventListener('keyup', refresh);
+    input.addEventListener('paste', () => { setTimeout(refresh, 100); setTimeout(refresh, 300); });
+    input.addEventListener('cut', () => setTimeout(refresh, 100));
+    input.addEventListener('compositionend', refresh);
+    input.addEventListener('blur', refresh);
   });
+
+  // Fallback poll — catches iOS drag-drop, autofill, third-party keyboards
+  setInterval(() => {
+    [1, 2, 3].forEach(i => {
+      const input = document.getElementById('url-' + i);
+      updateInputState(i, input.value);
+    });
+  }, 500);
 
   /* ============================================
      SERVICE WORKER REGISTRATION
   ============================================ */
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(() => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {
         // Fails silently if not on HTTPS or local server — app still works
       });
     });
